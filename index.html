@@ -609,43 +609,23 @@ function zapaziNastroiki() {
     init();
 }
 
-async function sinhroniziraj() {
+function sinhroniziraj() {
     const url = nastroiki.gasUrl;
-    if (!url) { alert("Моля, поставете URL в настройките!"); return; }
-    
-    // Олекотяваме данните (махаме снимките)
-    const dataToSync = klienti.map(k => {
+    if (!url) { alert("Въведете URL в настройките!"); return; }
+
+    // Олекотяваме данните
+    const cleanData = klienti.map(k => {
         const { photo, ...rest } = k;
         return rest;
     });
 
-    // Създаваме скрита форма, за да заобиколим CORS защитите
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = url;
-    form.target = 'hidden_iframe'; // Изпраща без да презарежда страницата
+    const finalUrl = url + "?data=" + encodeURIComponent(JSON.stringify(cleanData));
 
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'data';
-    input.value = JSON.stringify(dataToSync);
-    form.appendChild(input);
-
-    // Скрит iframe за "тихо" изпращане
-    let iframe = document.getElementById('hidden_iframe');
-    if (!iframe) {
-        iframe = document.createElement('iframe');
-        iframe.id = 'hidden_iframe';
-        iframe.name = 'hidden_iframe';
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
+    // Изпращане чрез скрит елемент (най-стабилния метод)
+    const img = new Image();
+    img.src = finalUrl;
     
-    alert("Данните са изпратени по защитен канал! Проверете таблицата след малко.");
-    document.body.removeChild(form);
+    alert("Данните са изпратени! Проверете таблицата след 10 секунди.");
 }
 function eksportDanni() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(klienti));
@@ -681,6 +661,7 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
 
 
 
