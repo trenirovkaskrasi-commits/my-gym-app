@@ -38,22 +38,51 @@
             background-color: var(--bg);
             color: var(--text);
             font-family: var(--font-main);
-            user-select: none;
             overflow-x: hidden;
         }
 
         header {
-            background-color: var(--accent);
+            background: var(--accent);
             color: white;
-            padding: 15px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 100;
         }
+
+        .header-left { display: flex; align-items: center; gap: 15px; flex: 1; }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .search-box {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 8px;
+            width: 0;
+            transition: width 0.3s;
+            overflow: hidden;
+        }
+        .search-box.active { width: 150px; border: 1px solid white; }
+
+        /* METRO ICONS STYLE */
+        .icon-btn { 
+            width: 24px; 
+            height: 24px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+        .icon-btn svg { fill: white; width: 100%; height: 100%; }
 
         .container {
             padding: 10px;
@@ -61,523 +90,545 @@
             margin: 0 auto;
         }
 
-        /* ТАЙЛОВЕ (METRO TILES) */
+        /* КЛИЕНТСКИ ПЛОЧКИ */
         .klient-tile {
-            background-color: var(--tile);
+            background: var(--tile);
             display: grid;
             grid-template-columns: 80px 1fr 60px;
             align-items: center;
             padding: 10px;
             margin-bottom: 5px;
             cursor: pointer;
-            transition: transform 0.1s;
-            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        .klient-tile:active {
-            transform: scale(0.98);
-            background-color: #ddd;
-        }
+        .klient-photo { width: 70px; height: 70px; object-fit: cover; border: 1px solid #888; }
 
-        .klient-photo {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            background-color: #ccc;
-            border: 1px solid #888;
-        }
+        .status-badge { font-weight: 900; font-size: 0.7rem; padding: 2px 6px; display: inline-block; text-transform: uppercase; }
+        .active-status { background: var(--green); color: white; }
+        .inactive-status { background: var(--red); color: white; }
 
-        .klient-info {
-            padding-left: 15px;
-        }
-
-        .klient-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            text-transform: uppercase;
-        }
-
-        .status-badge {
-            display: inline-block;
-            font-size: 0.7rem;
-            font-weight: 900;
-            padding: 2px 6px;
-            margin-top: 4px;
-            text-transform: uppercase;
-        }
-
-        .active-status { background-color: var(--green); color: white; }
-        .inactive-status { background-color: var(--red); color: white; }
-
-        .rem-count {
-            font-size: 1.8rem;
-            font-weight: 900;
-            text-align: right;
-            color: var(--accent);
-        }
+        .rem-count { font-size: 1.5rem; font-weight: 900; text-align: right; color: var(--accent); }
 
         /* ФОРМИ */
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-weight: bold; margin-bottom: 4px; text-transform: uppercase; font-size: 0.75rem; color: #666; }
+        
         input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 10px;
-            background-color: var(--tile);
-            border: 2px solid #ccc;
-            color: var(--text);
-            font-size: 1rem;
-            font-weight: bold;
-        }
-
-        input:focus {
-            border-color: var(--accent);
-            outline: none;
+            width: 100%; padding: 12px; background: var(--tile); border: 2px solid #ccc;
+            color: var(--text); font-family: inherit; font-weight: bold; font-size: 0.95rem;
         }
 
         .btn {
-            border: none;
-            padding: 16px;
-            color: white;
-            font-weight: 900;
-            font-size: 1rem;
-            text-transform: uppercase;
-            cursor: pointer;
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-            transition: opacity 0.2s;
+            border: none; padding: 16px; color: white; font-weight: 900;
+            text-transform: uppercase; cursor: pointer; display: block; width: 100%;
+            text-align: center; margin-bottom: 8px; font-size: 0.9rem;
         }
+        .btn-green { background: var(--green); }
+        .btn-blue { background: var(--blue); }
+        .btn-red { background: var(--red); }
+        .btn-purple { background: var(--purple); }
+        .btn-dark-red { background: var(--dark-red); }
 
-        .btn:active { opacity: 0.8; }
-        .btn-green { background-color: var(--green); }
-        .btn-blue { background-color: var(--blue); }
-        .btn-red { background-color: var(--red); }
-        .btn-purple { background-color: var(--purple); }
-
-        /* Floating Action Button */
         .fab {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            width: 65px;
-            height: 65px;
-            background-color: var(--accent);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 35px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            cursor: pointer;
-            z-index: 999;
+            position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px;
+            background: var(--accent); color: white; display: flex; align-items: center;
+            justify-content: center; font-size: 30px; font-weight: bold; z-index: 99;
         }
 
-        /* СЕКЦИИ */
+        /* ПРОФИЛ СПЕЦИФИЧНИ */
+        .metro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 10px 0; }
+        .metro-counter-tile { background: var(--tile); padding: 15px; text-align: center; }
+        .counter-label { font-weight: bold; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; }
+        .counter-value { font-size: 2.8rem; font-weight: 900; line-height: 1; }
+
+        .info-block { font-size: 0.85rem; line-height: 1.4; margin-top: 5px; }
+        .info-row { border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2px 0; }
+
+        .hronologiya { background: var(--tile); padding: 10px; margin: 10px 0; }
+        .istoriya-item { border-bottom: 1px solid #ccc; padding: 6px 0; font-size: 0.85rem; }
+
         .view { display: none; }
-        .view.active { display: block; }
-
-        /* АБОНАМЕНТНИ ДЕТАЙЛИ */
-        .profile-header {
-            text-align: center;
-            padding: 20px;
-            background-color: var(--tile);
-            margin-bottom: 15px;
-        }
-
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border: 4px solid var(--accent);
-            margin-bottom: 10px;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .stat-box {
-            background-color: var(--tile);
-            padding: 15px;
-            text-align: center;
-        }
-
-        .stat-val {
-            font-size: 1.5rem;
-            font-weight: 900;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: #666;
-            text-transform: uppercase;
-        }
-
+        .active-view { display: block; }
         .hidden { display: none !important; }
+        .tab-btn.active { background: var(--accent); color: white; }
     </style>
 </head>
 <body data-theme="light">
 
 <header>
-    <div style="font-weight: 900; font-size: 1.2rem; letter-spacing: 1px;">GYM MANAGER</div>
-    <div onclick="pokajiSektsiya('view-settings')" style="cursor: pointer; font-size: 1.5rem;">⚙️</div>
+    <div class="header-left">
+        <div class="icon-btn" onclick="toggleSearch()">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        </div>
+        <input type="text" id="search-input" class="search-box" placeholder="Търси име..." oninput="renderList()">
+        <h1 id="header-title">АБОНАМЕНТИ</h1>
+    </div>
+    <div class="icon-btn" onclick="pokajiSektsiya('view-settings')">
+        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87a.49.49 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.49.49 0 0 0-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+    </div>
 </header>
 
 <div class="container">
     
-    <div id="view-main" class="view active">
-        <input type="text" id="search-input" placeholder="ТЪРСИ КЛИЕНТ..." oninput="renderList()">
+    <div id="view-main" class="view active-view">
         <div id="klient-list-container"></div>
         <div class="fab" onclick="otvoriDobavyane()">+</div>
     </div>
 
     <div id="view-add" class="view">
-        <h2 id="view-add-title" style="text-transform: uppercase; border-left: 5px solid var(--accent); padding-left: 10px;">Нов Клиент</h2>
-        
-        <label style="font-size: 0.8rem; font-weight: bold; color: #666;">СНИМКА</label>
-        <input type="file" id="inp-photo" accept="image/*" onchange="obrabotiSnimka(this)">
-        <div id="photo-preview-container" style="text-align: center; margin-bottom: 15px; display: none;">
-            <img id="img-preview" style="width: 100%; max-height: 200px; object-fit: cover; border: 1px solid #ccc;">
+        <h2 id="add-view-title">НОВ КЛИЕНТ</h2>
+        <div class="form-group">
+            <label>Снимка</label>
+            <input type="file" id="inp-photo" accept="image/*" onchange="obrabotiSnimka(this)">
+            <img id="img-preview" style="width:100%; height:180px; object-fit:cover; margin-top:10px; display:none">
         </div>
-
-        <input type="text" id="inp-name" placeholder="ИМЕ И ФАМИЛИЯ">
-        <input type="tel" id="inp-phone" placeholder="ТЕЛЕФОН">
-        <input type="email" id="inp-email" placeholder="EMAIL (ОПЦИЯ)">
-
+        <div class="form-group">
+            <label>Име и Фамилия</label>
+            <input type="text" id="inp-name">
+        </div>
+        <div class="form-group">
+            <label>Телефон</label>
+            <input type="tel" id="inp-phone">
+        </div>
+        <div class="form-group">
+            <label>Имейл адрес</label>
+            <input type="email" id="inp-email">
+        </div>
         <div id="subscription-fields">
-            <label style="font-size: 0.8rem; font-weight: bold; color: #666;">ПАКЕТ ТРЕНИРОВКИ</label>
-            <select id="sel-paket" onchange="izchisliTsena()">
-                <option value="8">8 ТРЕНИРОВКИ</option>
-                <option value="10">10 ТРЕНИРОВКИ</option>
-                <option value="12" selected>12 ТРЕНИРОВКИ</option>
-                <option value="16">16 ТРЕНИРОВКИ</option>
-                <option value="20">20 ТРЕНИРОВКИ</option>
-            </select>
-
-            <label style="font-size: 0.8rem; font-weight: bold; color: #666;">СРОК НА ВАЛИДНОСТ</label>
-            <select id="sel-srok" onchange="izchisliTsena()">
-                <option value="30" selected>30 ДНИ</option>
-                <option value="45">45 ДНИ</option>
-                <option value="60">60 ДНИ</option>
-                <option value="90">90 ДНИ</option>
-            </select>
-
-            <label style="font-size: 0.8rem; font-weight: bold; color: #666;">ОТСТЪПКА (%)</label>
-            <select id="sel-otstapka" onchange="izchisliTsena()">
-                <option value="0" selected>БЕЗ ОТСТЪПКА</option>
-                <option value="5">5%</option>
-                <option value="10">10%</option>
-                <option value="20">20%</option>
-            </select>
-
-            <div style="background: var(--tile); padding: 15px; margin-bottom: 15px; text-align: center; border: 2px dashed var(--accent);">
-                <span style="font-size: 0.8rem; color: #666;">КРАЙНА ЦЕНА:</span><br>
-                <span id="final-price" style="font-size: 1.8rem; font-weight: 900; color: var(--accent);">0.00 лв.</span>
+            <div class="form-group">
+                <label>Абонаментен Пакет</label>
+                <select id="sel-paket" onchange="izchisliTsena()"></select>
+            </div>
+            <div class="form-group">
+                <label>Срок на валидност</label>
+                <select id="sel-srok" onchange="izchisliTsena()">
+                    <option value="0">Без срок</option>
+                    <option value="30">30 дни</option>
+                    <option value="45">45 дни</option>
+                    <option value="60">60 дни</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Отстъпка</label>
+                <select id="sel-otstapka" onchange="izchisliTsena()"></select>
+            </div>
+            <div id="price-display-box" style="background: var(--tile); padding: 15px; margin-bottom: 20px; border-left: 5px solid var(--accent);">
+                <div id="final-price" style="font-size: 1.8rem; font-weight: 900; color: var(--accent);">0.00€</div>
+                <div id="price-details" style="font-size: 0.8rem; color: #555; font-weight: bold; margin-top:5px;"></div>
             </div>
         </div>
-
-        <button class="btn btn-blue" onclick="zapaziKlient()">ЗАПАЗИ КЛИЕНТ</button>
+        <button class="btn btn-blue" onclick="zapaziKlient()">ЗАПАЗИ</button>
         <button class="btn btn-red" onclick="pokajiSektsiya('view-main')">ОТКАЗ</button>
     </div>
 
     <div id="view-profile" class="view">
-        <div id="profile-content"></div>
+        <div id="profile-header-content"></div>
         
-        <button id="btn-markiraj" class="btn btn-green" onclick="markirajTrenirovka()" style="font-size: 1.2rem; padding: 20px;">МАРКИРАЙ ТРЕНИРОВКА</button>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <button class="btn btn-blue" onclick="podnoviAbonament()">ПОДНОВИ</button>
-            <button class="btn btn-purple" onclick="generirajOtchet()">Вайбър Отчет</button>
+        <div id="counter-tiles-container"></div>
+
+        <div class="tile" style="background:var(--tile); padding:15px;">
+            <label>Вид Тренировка</label>
+            <select id="sel-trenirovka"></select>
+            <button id="btn-markiraj" class="btn btn-green" style="margin-top:10px" onclick="markirajTrenirovka()">МАРКИРАЙ ТРЕНИРОВКА</button>
         </div>
-        
-        <button class="btn btn-red" onclick="iztriiKlient()" style="padding: 10px; font-size: 0.8rem;">ИЗТРИЙ КЛИЕНТ</button>
-        <button class="btn btn-blue" onclick="pokajiSektsiya('view-main')">ОБРАТНО</button>
+
+        <div class="hronologiya">
+            <div style="display:flex; justify-content:space-between; align-items:center">
+                <label>Хронология</label>
+                <button id="btn-toggle-hronologiya" onclick="razshiriHronologiya()" style="background:none; border:none; color:var(--accent); font-weight:bold; cursor:pointer">ВИЖ ВСИЧКИ</button>
+            </div>
+            <div id="hronologiya-list"></div>
+        </div>
+
+        <button class="btn btn-purple" onclick="generirajOtchet()">ОТЧЕТ / Вайбър</button>
+        <button class="btn btn-dark-red" onclick="iztriiKlientPotvarjdenie()">ИЗТРИВАНЕ НА АКАУНТ</button>
+        <button class="btn btn-blue" style="margin-top:10px" onclick="pokajiSektsiya('view-main')">ОБРАТНО КЪМ СПИСЪКА</button>
     </div>
 
     <div id="view-settings" class="view">
-        <h2 style="text-transform: uppercase; border-left: 5px solid var(--accent); padding-left: 10px;">Настройки</h2>
-        
-        <label>ТЕМА</label>
-        <select onchange="smeniTemu(this.value)">
-            <option value="light">СВЕТЛА</option>
-            <option value="dark">ТЪМНА</option>
-        </select>
-
-        <label>ЦЕНА НА ЕДИНИЧНА ТРЕНИРОВКА (лв.)</label>
-        <input type="number" id="set-trenirovka-price" value="10" oninput="zapaziNastroiki()">
-
-        <label>GOOGLE SCRIPT URL (doGet)</label>
-        <input type="text" id="set-gas-url" placeholder="https://script.google.com/macros/s/.../exec" oninput="zapaziNastroiki()">
-
-        <hr style="margin: 20px 0;">
-        
-        <button class="btn btn-green" onclick="sinhroniziraj()">СИНХРОНИЗИРАЙ СЕГА</button>
-        <button class="btn btn-purple" onclick="eksportDanni()">ЕКСПОРТ (БЕКЪП)</button>
-        <button class="btn btn-blue" onclick="importDanni()">ИМПОРТ (RESTORE)</button>
-        
-        <button class="btn btn-red" onclick="pokajiSektsiya('view-main')">ЗАТВОРИ</button>
+        <h2>НАСТРОЙКИ</h2>
+        <div style="display:flex; margin-bottom:20px; background:#ccc">
+            <button class="tab-btn active" onclick="switchTab('st-view', this)" style="flex:1; padding:15px; border:none; font-weight:bold">ВЪНШЕН ВИД</button>
+            <button class="tab-btn" onclick="switchTab('st-data', this)" style="flex:1; padding:15px; border:none; font-weight:bold">ТРЕНИРОВКИ</button>
+            <button class="tab-btn" onclick="switchTab('st-sync', this)" style="flex:1; padding:15px; border:none; font-weight:bold">БЕКЪП</button>
+        </div>
+        <div id="st-view" class="tab-pane">
+            <div class="form-group"><label>Заглавие</label><input type="text" id="set-header-text"></div>
+            <div class="form-group"><label>Тема</label><select id="set-theme"><option value="light">Светла</option><option value="dark">Тъмна</option></select></div>
+            <div class="form-group"><label>Шрифт</label><select id="set-font"><option value="small">Малък</option><option value="medium">Среден</option><option value="large">Голям</option></select></div>
+            <div class="form-group"><label>Акцент</label><input type="color" id="set-accent"></div>
+        </div>
+        <div id="st-data" class="tab-pane hidden">
+            <label>Тренировки</label><textarea id="set-trenirovki" rows="4"></textarea>
+            <label>Пакети (JSON)</label><textarea id="set-paketi" rows="4"></textarea>
+            <button class="btn btn-blue" onclick="zapaziNastroiki()">ЗАПАЗИ ДАННИ</button>
+        </div>
+        <div id="st-sync" class="tab-pane hidden">
+            <label>Google Script URL</label><input type="url" id="set-gas-url">
+            <button class="btn btn-blue" onclick="sinhroniziraj()">СИНХРОНИЗИРАЙ</button>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px">
+                <button class="btn btn-green" onclick="eksportDanni()">ЕКСПОРТ</button>
+                <button class="btn btn-purple" onclick="importDanni()">ИМПОРТ</button>
+            </div>
+        </div>
+        <button class="btn btn-blue" style="margin-top:20px" onclick="zapaziNastroiki(); pokajiSektsiya('view-main')">ЗАПАЗИ ВСИЧКО</button>
+        <button class="btn btn-red" onclick="pokajiSektsiya('view-main')">ОТКАЗ</button>
     </div>
-
 </div>
 
 <script>
-/* ЛОГИКА И ДАННИ */
 let klienti = JSON.parse(localStorage.getItem('gym_klienti')) || [];
 let nastroiki = JSON.parse(localStorage.getItem('gym_settings')) || {
-    theme: 'light',
-    price: 10,
-    gasUrl: ''
+    header: "АБОНАМЕНТИ",
+    theme: "light",
+    fontSize: "medium",
+    accent: "#0078D7",
+    trenirovki: "Фулбоди, Дърпащи мускули, Бутащи мускули, Горна част, Долна част, Кръгова тренировка, Крака, Ръце, Пудовка, Кардио",
+    paketi: [
+        {broi: 8, tsena: 100}, {broi: 10, tsena: 125}, {broi: 12, tsena: 150},
+        {broi: 16, tsena: 200}, {broi: 20, tsena: 250}
+    ],
+    otstapki: [0, 4, 8]
 };
 
 let tekushtKlientId = null;
+let rezhimRedaktirane = false; 
 let snimkaBase64 = "";
-let rezhimRedaktirane = false;
+let hronologiyaRazgurnata = false;
+
+// ФУНКЦИЯ ЗА ЗВУК (БИП)
+function playBeep() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); 
+    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    oscillator.start();
+    oscillator.stop(audioCtx.currentTime + 0.1); 
+}
 
 function init() {
-    document.body.setAttribute('data-theme', nastroiki.theme);
-    document.getElementById('set-trenirovka-price').value = nastroiki.price;
-    document.getElementById('set-gas-url').value = nastroiki.gasUrl || '';
+    prilojiNastroiki();
     renderList();
+    popalniSelecti();
+}
+
+function prilojiNastroiki() {
+    document.getElementById('header-title').innerText = nastroiki.header;
+    document.body.setAttribute('data-theme', nastroiki.theme);
+    document.documentElement.style.setProperty('--accent', nastroiki.accent);
+    document.getElementById('set-header-text').value = nastroiki.header;
+    document.getElementById('set-theme').value = nastroiki.theme;
+    document.getElementById('set-font').value = nastroiki.fontSize;
+    document.getElementById('set-accent').value = nastroiki.accent;
+    document.getElementById('set-trenirovki').value = nastroiki.trenirovki;
+    document.getElementById('set-paketi').value = JSON.stringify(nastroiki.paketi);
+}
+
+function popalniSelecti() {
+    document.getElementById('sel-paket').innerHTML = nastroiki.paketi.map(p => `<option value="${p.broi}">${p.broi} тренировки - ${p.tsena}€</option>`).join('');
+    document.getElementById('sel-otstapka').innerHTML = nastroiki.otstapki.map(o => `<option value="${o}">${o}%</option>`).join('');
+    document.getElementById('sel-trenirovka').innerHTML = nastroiki.trenirovki.split(',').map(t => `<option value="${t.trim()}">${t.trim()}</option>`).join('');
+}
+
+function toggleSearch() {
+    const inp = document.getElementById('search-input');
+    inp.classList.toggle('active');
+    if (inp.classList.contains('active')) inp.focus();
 }
 
 function renderList() {
     const query = document.getElementById('search-input').value.toLowerCase();
     const container = document.getElementById('klient-list-container');
     container.innerHTML = "";
+    
+    const filtred = klienti.filter(k => k.name.toLowerCase().includes(query));
 
-    const filtered = klienti.filter(k => k.name.toLowerCase().includes(query));
-
-    filtered.forEach(k => {
-        const ost = k.abonament.broi - k.abonament.napraveni;
-        const isExpired = ost <= 0 || (new Date(k.abonament.krainaData.split('.').reverse().join('-')) < new Date());
+    filtred.forEach(k => {
+        const ostavashti = k.abonament ? (k.abonament.broi - k.abonament.napraveni) : 0;
+        const statusClass = ostavashti > 0 ? "active-status" : "inactive-status";
+        const statusText = ostavashti > 0 ? "АКТИВЕН" : "НЕАКТИВЕН";
         
         const tile = document.createElement('div');
-        tile.className = 'klient-tile';
+        tile.className = "klient-tile";
         tile.onclick = () => otvoriProfil(k.id);
-        
         tile.innerHTML = `
             <img src="${k.photo || 'https://via.placeholder.com/80'}" class="klient-photo">
-            <div class="klient-info">
-                <div class="klient-name">${k.name}</div>
-                <span class="status-badge ${!isExpired ? 'active-status' : 'inactive-status'}">
-                    ${!isExpired ? 'АКТИВЕН' : 'ИЗТЕКЪЛ'}
-                </span>
-                <div style="font-size: 0.7rem; color: #888; margin-top: 2px;">До: ${k.abonament.krainaData}</div>
+            <div style="padding-left:10px">
+                <div style="font-weight:900; text-transform:uppercase; font-size:0.9rem">${k.name}</div>
+                <span class="status-badge ${statusClass}">${statusText}</span>
             </div>
-            <div class="rem-count">${ost}</div>
+            <div class="rem-count">${ostavashti}</div>
         `;
         container.appendChild(tile);
     });
 }
 
-function pokajiSektsiya(id) {
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    window.scrollTo(0,0);
+function izchisliKrainaData(dni) {
+    if (dni == 0) return "Безсрочен";
+    let d = new Date();
+    d.setDate(d.getDate() + parseInt(dni));
+    return d.toLocaleDateString('bg-BG');
+}
+
+function izchisliTsena() {
+    const broi = parseInt(document.getElementById('sel-paket').value);
+    const otstapka = parseInt(document.getElementById('sel-otstapka').value);
+    const srok = document.getElementById('sel-srok').value;
+    const paket = nastroiki.paketi.find(p => p.broi === broi);
+    
+    const krainaTsena = (paket.tsena * (1 - otstapka / 100)).toFixed(2);
+    const krainaData = izchisliKrainaData(srok);
+
+    document.getElementById('final-price').innerText = krainaTsena + "€";
+    document.getElementById('price-details').innerText = `Отстъпка: ${otstapka}% | Срок: ${srok == 0 ? 'Без срок' : srok + ' дни'} | Валиден до: ${krainaData} г.`;
 }
 
 function otvoriDobavyane() {
     tekushtKlientId = null;
     rezhimRedaktirane = false;
     snimkaBase64 = "";
-    document.getElementById('view-add-title').innerText = "Нов Клиент";
+    document.getElementById('add-view-title').innerText = "НОВ КЛИЕНТ";
     document.getElementById('subscription-fields').classList.remove('hidden');
+    document.getElementById('img-preview').style.display = 'none';
     document.getElementById('inp-name').value = "";
     document.getElementById('inp-phone').value = "";
     document.getElementById('inp-email').value = "";
-    document.getElementById('photo-preview-container').style.display = 'none';
     izchisliTsena();
     pokajiSektsiya('view-add');
 }
 
-function obrabotiSnimka(input) {
-    const file = input.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            snimkaBase64 = e.target.result;
-            document.getElementById('img-preview').src = snimkaBase64;
-            document.getElementById('photo-preview-container').style.display = 'block';
-        };
-        reader.readAsDataURL(file);
+function otvoriRedaktirane(id) {
+    const k = klienti.find(x => x.id === id);
+    tekushtKlientId = id;
+    rezhimRedaktirane = true;
+    document.getElementById('add-view-title').innerText = "РЕДАКЦИЯ НА ПРОФИЛ";
+    document.getElementById('subscription-fields').classList.add('hidden');
+    document.getElementById('inp-name').value = k.name;
+    document.getElementById('inp-phone').value = k.phone || "";
+    document.getElementById('inp-email').value = k.email || "";
+    if (k.photo) {
+        document.getElementById('img-preview').src = k.photo;
+        document.getElementById('img-preview').style.display = 'block';
+        snimkaBase64 = k.photo;
     }
-}
-
-function izchisliTsena() {
-    const broi = parseInt(document.getElementById('sel-paket').value);
-    const otstapka = parseInt(document.getElementById('sel-otstapka').value);
-    let total = broi * nastroiki.price;
-    total = total - (total * (otstapka / 100));
-    document.getElementById('final-price').innerText = total.toFixed(2) + " лв.";
+    pokajiSektsiya('view-add');
 }
 
 function zapaziKlient() {
-    const name = document.getElementById('inp-name').value.trim();
-    if (!name) { alert("Въведете име!"); return; }
+    const name = document.getElementById('inp-name').value;
+    if (!name) return alert("Моля, въведете име!");
+
+    playBeep(); 
 
     if (rezhimRedaktirane && tekushtKlientId) {
-        // РЕДАКЦИЯ
-        let k = klienti.find(x => x.id === tekushtKlientId);
+        // РЕДАКЦИЯ НА СЪЩЕСТВУВАЩ КЛИЕНТ
+        const k = klienti.find(x => x.id === tekushtKlientId);
         k.name = name;
         k.phone = document.getElementById('inp-phone').value;
         k.email = document.getElementById('inp-email').value;
-        if (snimkaBase64) k.photo = snimkaBase64;
+        k.photo = snimkaBase64;
     } else {
-        // НОВ
+        // НОВ КЛИЕНТ ИЛИ ПОДНОВЯВАНЕ (ако има tekushtKlientId но не сме в реж. редакция)
         const broi = parseInt(document.getElementById('sel-paket').value);
         const srok = parseInt(document.getElementById('sel-srok').value);
         const otstapka = parseInt(document.getElementById('sel-otstapka').value);
-        
-        const start = new Date();
-        const kraj = new Date();
-        kraj.setDate(start.getDate() + srok);
+        const kData = izchisliKrainaData(srok);
+        const kTsena = document.getElementById('final-price').innerText;
 
-        const novKlient = {
-            id: Date.now(),
-            name: name,
-            phone: document.getElementById('inp-phone').value,
-            email: document.getElementById('inp-email').value,
-            photo: snimkaBase64,
-            abonament: {
-                broi: broi,
-                napraveni: 0,
-                startData: start.toLocaleDateString('bg-BG'),
-                krainaData: kraj.toLocaleDateString('bg-BG'),
-                otstapka: otstapka,
-                tsena: document.getElementById('final-price').innerText
-            },
-            history: []
+        const novAbonament = {
+            broi: broi, napraveni: 0, srok: srok, otstapka: otstapka,
+            startData: new Date().toLocaleDateString('bg-BG'),
+            krainaData: kData, tsena: kTsena
         };
-        klienti.push(novKlient);
+
+        if (tekushtKlientId) {
+            // ПОДНОВЯВАНЕ НА СЪЩЕСТВУВАЩ
+            const k = klienti.find(x => x.id === tekushtKlientId);
+            k.abonament = novAbonament;
+            k.history.unshift({ data: new Date().toLocaleDateString('bg-BG'), tip: "Подновен абонамент" });
+        } else {
+            // ИЗЦЯЛО НОВ КЛИЕНТ
+            klienti.push({
+                id: Date.now(), name: name, photo: snimkaBase64,
+                phone: document.getElementById('inp-phone').value,
+                email: document.getElementById('inp-email').value,
+                abonament: novAbonament,
+                history: [{ data: new Date().toLocaleDateString('bg-BG'), tip: "Нов абонамент" }]
+            });
+        }
     }
 
     localStorage.setItem('gym_klienti', JSON.stringify(klienti));
     renderList();
-    pokajiSektsiya('view-main');
-    playBeep();
+    if (tekushtKlientId) otvoriProfil(tekushtKlientId); else pokajiSektsiya('view-main');
 }
 
 function otvoriProfil(id) {
     tekushtKlientId = id;
+    hronologiyaRazgurnata = false;
     const k = klienti.find(x => x.id === id);
-    const ost = k.abonament.broi - k.abonament.napraveni;
+    const a = k.abonament;
+    const ostavashti = a.broi - a.napraveni;
     
-    let historyHtml = k.history.slice(0, 5).map(h => `<div style="font-size:0.8rem; border-bottom:1px solid #ddd; padding:5px;">${h}</div>`).join('');
-
-    document.getElementById('profile-content').innerHTML = `
-        <div class="profile-header">
-            <img src="${k.photo || 'https://via.placeholder.com/150'}" class="profile-img">
-            <h2 style="margin:0; text-transform:uppercase;">${k.name}</h2>
-            <div style="color:var(--accent); font-weight:bold;">${k.phone || 'Няма телефон'}</div>
-        </div>
-        
-        <div class="stat-grid">
-            <div class="stat-box">
-                <span class="stat-label">Оставащи</span>
-                <span class="stat-val" style="color:var(--accent); font-size:2.5rem;">${ost}</span>
+    const headerCont = document.getElementById('profile-header-content');
+    headerCont.innerHTML = `
+        <div style="background:var(--tile); padding:15px; display:flex; gap:15px; align-items:flex-start">
+            <img src="${k.photo || 'https://via.placeholder.com/80'}" style="width:90px; height:90px; object-fit:cover; border:1px solid #ccc">
+            <div style="flex:1">
+                <div style="display:flex; justify-content:space-between; align-items:center">
+                    <h2 style="margin:0; text-transform:uppercase; font-size:1.1rem">${k.name}</h2>
+                    <span class="icon-btn" onclick="otvoriRedaktirane(${k.id})" style="color:var(--accent); width:20px; height:20px">
+                        <svg viewBox="0 0 24 24" style="fill:var(--accent)"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </span>
+                </div>
+                <div class="info-block">
+                    <div class="info-row"><b>Пакет:</b> ${a.broi} тренировки</div>
+                    <div class="info-row"><b>Статус:</b> <span class="status-badge ${ostavashti > 0 ? 'active-status' : 'inactive-status'}">${ostavashti > 0 ? 'АКТИВЕН' : 'НЕАКТИВЕН'}</span></div>
+                    <div class="info-row"><b>Цена:</b> ${a.tsena} (отстъпка ${a.otstapka}%)</div>
+                    <div class="info-row"><b>Валидност:</b> ${a.srok == 0 ? 'Без срок' : a.srok + ' дни'}</div>
+                    <div class="info-row"><b>Край на пакета:</b> ${a.krainaData} г.</div>
+                </div>
             </div>
-            <div class="stat-box">
-                <span class="stat-label">Валиден до</span>
-                <span class="stat-val" style="font-size:1.1rem; margin-top:10px;">${k.abonament.krainaData}</span>
-            </div>
-        </div>
-
-        <div style="background:var(--tile); padding:10px; margin-bottom:15px;">
-            <div class="stat-label" style="margin-bottom:5px;">Последни 5 посещения:</div>
-            ${historyHtml || 'Няма записани посещения'}
         </div>
     `;
-    
-    document.getElementById('btn-markiraj').disabled = (ost <= 0);
+
+    document.getElementById('counter-tiles-container').innerHTML = `
+        <div class="metro-grid">
+            <div class="metro-counter-tile">
+                <div class="counter-label" style="color:var(--red)">НАПРАВЕНИ</div>
+                <div class="counter-value">${a.napraveni}</div>
+            </div>
+            <div class="metro-counter-tile">
+                <div class="counter-label" style="color:var(--green)">ОСТАВАЩИ</div>
+                <div class="counter-value">${ostavashti}</div>
+            </div>
+        </div>
+    `;
+
+    const btnMark = document.getElementById('btn-markiraj');
+    if (ostavashti <= 0) {
+        btnMark.className = "btn btn-blue";
+        btnMark.innerText = "ПОДНОВИ АБОНАМЕНТ";
+        btnMark.onclick = () => {
+            tekushtKlientId = k.id;
+            rezhimRedaktirane = false;
+            document.getElementById('add-view-title').innerText = "ПОДНОВЯВАНЕ";
+            document.getElementById('subscription-fields').classList.remove('hidden');
+            document.getElementById('inp-name').value = k.name;
+            izchisliTsena();
+            pokajiSektsiya('view-add');
+        };
+    } else {
+        btnMark.className = "btn btn-green";
+        btnMark.innerText = "МАРКИРАЙ ТРЕНИРОВКА";
+        btnMark.onclick = markirajTrenirovka;
+    }
+
+    renderHronologiya(k.history);
     pokajiSektsiya('view-profile');
 }
 
-function markirajTrenirovka() {
-    const k = klienti.find(x => x.id === tekushtKlientId);
-    if (k.abonament.napraveni < k.abonament.broi) {
-        k.abonament.napraveni++;
-        const d = new Date();
-        k.history.unshift(d.toLocaleDateString('bg-BG') + " " + d.toLocaleTimeString('bg-BG', {hour: '2-digit', minute:'2-digit'}));
-        
-        localStorage.setItem('gym_klienti', JSON.stringify(klienti));
-        playBeep();
-        otvoriProfil(tekushtKlientId);
+async function obrabotiSnimka(input) {
+    const file = input.files[0];
+    if (file) {
+        snimkaBase64 = await toBase64(file);
+        const preview = document.getElementById('img-preview');
+        preview.src = snimkaBase64; preview.style.display = 'block';
     }
 }
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader(); reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error);
+});
 
-function podnoviAbonament() {
-    rezhimRedaktirane = false;
+function markirajTrenirovka() {
+    playBeep(); 
     const k = klienti.find(x => x.id === tekushtKlientId);
-    document.getElementById('view-add-title').innerText = "Подновяване: " + k.name;
-    document.getElementById('inp-name').value = k.name;
-    document.getElementById('inp-phone').value = k.phone;
-    document.getElementById('inp-email').value = k.email;
-    document.getElementById('subscription-fields').classList.remove('hidden');
-    pokajiSektsiya('view-add');
+    const tip = document.getElementById('sel-trenirovka').value;
+    k.abonament.napraveni++;
+    k.history.unshift({ data: new Date().toLocaleDateString('bg-BG'), tip: tip });
+    localStorage.setItem('gym_klienti', JSON.stringify(klienti));
+    otvoriProfil(tekushtKlientId);
 }
 
-function iztriiKlient() {
-    if (confirm("Сигурни ли сте, че искате да изтриете този клиент и неговата история?")) {
-        klienti = klienti.filter(x => x.id !== tekushtKlientId);
+function renderHronologiya(history) {
+    const list = document.getElementById('hronologiya-list');
+    const btn = document.getElementById('btn-toggle-hronologiya');
+    const items = hronologiyaRazgurnata ? history : history.slice(0, 3);
+    
+    list.innerHTML = items.map(h => `<div class="istoriya-item">📅 ${h.data} г. - ${h.tip}</div>`).join('');
+    btn.innerText = hronologiyaRazgurnata ? "СВИЙ СПИСЪКА" : "ВИЖ ВСИЧКИ";
+}
+
+function razshiriHronologiya() {
+    hronologiyaRazgurnata = !hronologiyaRazgurnata;
+    const k = klienti.find(x => x.id === tekushtKlientId);
+    renderHronologiya(k.history);
+}
+
+function generirajOtchet() {
+    const k = klienti.find(x => x.id === tekushtKlientId);
+    const a = k.abonament;
+    const ostavashti = a.broi - a.napraveni;
+    
+    // Вземаме първия запис от историята (последна активност)
+    const lastActivity = k.history[0] || { data: "---", tip: "Няма активност" };
+
+    const text = `📊 ОТЧЕТ ЗА КЛИЕНТ\n👤 ${k.name}\n\n📦 Пакет: ${a.broi} тренировки\n✅ Активиран: ${a.startData} г.\n⏳ Валиден до: ${a.krainaData} г.\n\n✔️ Направени: ${a.napraveni}\n🔜 Оставащи: ${ostavashti}\n\n📜 ПОСЛЕДНИ АКТИВНОСТИ:\n🗓️ ${lastActivity.data} г. ${lastActivity.tip}`;
+    
+    window.location.href = `viber://forward?text=${encodeURIComponent(text)}`;
+}
+
+function iztriiKlientPotvarjdenie() {
+    if (confirm("ВНИМАНИЕ: Сигурни ли сте, че искате да изтриете този клиент и целия му акаунт?")) {
+        klienti = klienti.filter(k => k.id !== tekushtKlientId);
         localStorage.setItem('gym_klienti', JSON.stringify(klienti));
         renderList();
         pokajiSektsiya('view-main');
     }
 }
 
+function pokajiSektsiya(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+    document.getElementById(id).classList.add('active-view');
+    window.scrollTo(0,0);
+}
+
+function switchTab(id, btn) {
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.add('hidden'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.remove('hidden'); btn.classList.add('active');
+}
+
 function zapaziNastroiki() {
-    nastroiki.price = parseFloat(document.getElementById('set-trenirovka-price').value);
-    nastroiki.gasUrl = document.getElementById('set-gas-url').value;
+    nastroiki.header = document.getElementById('set-header-text').value;
+    nastroiki.theme = document.getElementById('set-theme').value;
+    nastroiki.fontSize = document.getElementById('set-font').value;
+    nastroiki.accent = document.getElementById('set-accent').value;
+    nastroiki.trenirovki = document.getElementById('set-trenirovki').value;
+    try { nastroiki.paketi = JSON.parse(document.getElementById('set-paketi').value); } catch(e) {}
     localStorage.setItem('gym_settings', JSON.stringify(nastroiki));
+    init();
 }
 
-function smeniTemu(val) {
-    nastroiki.theme = val;
-    document.body.setAttribute('data-theme', val);
-    zapaziNastroiki();
-}
-
-function playBeep() {
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(880, audioCtx.currentTime);
-        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + 0.1);
-    } catch(e) {}
-}
-
-/* СИНХРОНИЗИРАНЕ ЧРЕЗ DOGET */
 async function sinhroniziraj() {
-    const url = nastroiki.gasUrl;
-    if (!url) {
-        alert("Моля, поставете Google Script URL в настройките!");
-        return;
-    }
-
-    // Олекотяваме данните (премахваме снимките за бекъпа)
-    const dataToSync = klienti.map(k => {
-        const { photo, ...rest } = k;
-        return rest;
-    });
+    const url = document.getElementById('set-gas-url').value;
+    if (!url) return alert("Моля, поставете Google Script URL в настройките!");
 
     try {
-        const finalUrl = url + "?data=" + encodeURIComponent(JSON.stringify(dataToSync));
-        
-        // Използваме Image Beacon метода - най-стабилният за doGet
-        const img = new Image();
-        img.onload = () => alert("Синхронизацията приключи успешно!");
-        img.onerror = () => alert("Данните са изпратени към таблицата!");
-        img.src = finalUrl;
-        
+        // Експорт към Google Drive
+        const response = await fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(klienti)
+        });
+        if (response.ok) alert("Успешен бекъп в Google Drive!");
     } catch (e) {
         alert("Грешка при синхронизация: " + e.message);
     }
@@ -603,20 +654,15 @@ function importDanni() {
     input.click();
 }
 
-function generirajOtchet() {
-    const k = klienti.find(x => x.id === tekushtKlientId);
-    const ost = k.abonament.broi - k.abonament.napraveni;
-    const text = `📊 ОТЧЕТ ТРЕНИРОВКИ\n👤 Клиент: ${k.name}\n✅ Направени: ${k.abonament.napraveni}\n🔜 Оставащи: ${ost}\n📅 Валиден до: ${k.abonament.krainaData}`;
-    window.location.href = `viber://forward?text=${encodeURIComponent(text)}`;
-}
-
 init();
 
 // Регистрация на Service Worker за PWA
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
-    });
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker регистриран!', reg))
+      .catch(err => console.log('Грешка при регистрация:', err));
+  });
 }
 </script>
 </body>
