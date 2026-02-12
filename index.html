@@ -288,7 +288,8 @@ let nastroiki = JSON.parse(localStorage.getItem('gym_settings')) || {
         {broi: 8, tsena: 100}, {broi: 10, tsena: 125}, {broi: 12, tsena: 150},
         {broi: 16, tsena: 200}, {broi: 20, tsena: 250}
     ],
-    otstapki: [0, 4, 8]
+    otstapki: [0, 4, 8],
+    gasUrl: ""
 };
 
 let tekushtKlientId = null;
@@ -296,21 +297,19 @@ let rezhimRedaktirane = false;
 let snimkaBase64 = "";
 let hronologiyaRazgurnata = false;
 
-// ФУНКЦИЯ ЗА ЗВУК (БИП)
 function playBeep() {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioCtx.createOscillator();
-    const gainNode = audioCtx.createGain();
-
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); 
-    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-
-    oscillator.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
-
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + 0.1); 
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(800, audioCtx.currentTime); 
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.1); 
+    } catch(e) {}
 }
 
 function init() {
@@ -329,6 +328,7 @@ function prilojiNastroiki() {
     document.getElementById('set-accent').value = nastroiki.accent;
     document.getElementById('set-trenirovki').value = nastroiki.trenirovki;
     document.getElementById('set-paketi').value = JSON.stringify(nastroiki.paketi);
+    document.getElementById('set-gas-url').value = nastroiki.gasUrl || "";
 }
 
 function popalniSelecti() {
@@ -347,14 +347,11 @@ function renderList() {
     const query = document.getElementById('search-input').value.toLowerCase();
     const container = document.getElementById('klient-list-container');
     container.innerHTML = "";
-    
     const filtred = klienti.filter(k => k.name.toLowerCase().includes(query));
-
     filtred.forEach(k => {
         const ostavashti = k.abonament ? (k.abonament.broi - k.abonament.napraveni) : 0;
         const statusClass = ostavashti > 0 ? "active-status" : "inactive-status";
         const statusText = ostavashti > 0 ? "АКТИВЕН" : "НЕАКТИВЕН";
-        
         const tile = document.createElement('div');
         tile.className = "klient-tile";
         tile.onclick = () => otvoriProfil(k.id);
@@ -382,10 +379,8 @@ function izchisliTsena() {
     const otstapka = parseInt(document.getElementById('sel-otstapka').value);
     const srok = document.getElementById('sel-srok').value;
     const paket = nastroiki.paketi.find(p => p.broi === broi);
-    
     const krainaTsena = (paket.tsena * (1 - otstapka / 100)).toFixed(2);
     const krainaData = izchisliKrainaData(srok);
-
     document.getElementById('final-price').innerText = krainaTsena + "€";
     document.getElementById('price-details').innerText = `Отстъпка: ${otstapka}% | Срок: ${srok == 0 ? 'Без срок' : srok + ' дни'} | Валиден до: ${krainaData} г.`;
 }
@@ -422,20 +417,19 @@ function otvoriRedaktirane(id) {
 }
 
 function zapaziKlient() {
-    const name = document.getElementById('inp-name').value;
-    if (!name) return alert("Моля, въведете име!");
-
-    playBeep(); 
+    const name = document.getElementById('inp-name').value.trim();
+    if (!name) { alert("Моля, въведете име!"); return; }
+    playBeep();
 
     if (rezhimRedaktirane && tekushtKlientId) {
-        // РЕДАКЦИЯ НА СЪЩЕСТВУВАЩ КЛИЕНТ
-        const k = klienti.find(x => x.id === tekushtKlientId);
-        k.name = name;
-        k.phone = document.getElementById('inp-phone').value;
-        k.email = document.getElementById('inp-email').value;
-        k.photo = snimkaBase64;
+        let k = klienti.find(x => x.id === tekushtKlientId);
+        if (k) {
+            k.name = name;
+            k.phone = document.getElementById('inp-phone').value;
+            k.email = document.getElementById('inp-email').value;
+            k.photo = snimkaBase64;
+        }
     } else {
-        // НОВ КЛИЕНТ ИЛИ ПОДНОВЯВАНЕ (ако има tekushtKlientId но не сме в реж. редакция)
         const broi = parseInt(document.getElementById('sel-paket').value);
         const srok = parseInt(document.getElementById('sel-srok').value);
         const otstapka = parseInt(document.getElementById('sel-otstapka').value);
@@ -449,19 +443,22 @@ function zapaziKlient() {
         };
 
         if (tekushtKlientId) {
-            // ПОДНОВЯВАНЕ НА СЪЩЕСТВУВАЩ
-            const k = klienti.find(x => x.id === tekushtKlientId);
-            k.abonament = novAbonament;
-            k.history.unshift({ data: new Date().toLocaleDateString('bg-BG'), tip: "Подновен абонамент" });
+            let k = klienti.find(x => x.id === tekushtKlientId);
+            if (k) {
+                k.abonament = novAbonament;
+                k.history.unshift({ data: new Date().toLocaleDateString('bg-BG'), tip: "Подновен абонамент" });
+            }
         } else {
-            // ИЗЦЯЛО НОВ КЛИЕНТ
-            klienti.push({
-                id: Date.now(), name: name, photo: snimkaBase64,
+            const novKlient = {
+                id: Date.now(),
+                name: name,
+                photo: snimkaBase64,
                 phone: document.getElementById('inp-phone').value,
                 email: document.getElementById('inp-email').value,
                 abonament: novAbonament,
                 history: [{ data: new Date().toLocaleDateString('bg-BG'), tip: "Нов абонамент" }]
-            });
+            };
+            klienti.push(novKlient);
         }
     }
 
@@ -476,7 +473,6 @@ function otvoriProfil(id) {
     const k = klienti.find(x => x.id === id);
     const a = k.abonament;
     const ostavashti = a.broi - a.napraveni;
-    
     const headerCont = document.getElementById('profile-header-content');
     headerCont.innerHTML = `
         <div style="background:var(--tile); padding:15px; display:flex; gap:15px; align-items:flex-start">
@@ -498,7 +494,6 @@ function otvoriProfil(id) {
             </div>
         </div>
     `;
-
     document.getElementById('counter-tiles-container').innerHTML = `
         <div class="metro-grid">
             <div class="metro-counter-tile">
@@ -511,7 +506,6 @@ function otvoriProfil(id) {
             </div>
         </div>
     `;
-
     const btnMark = document.getElementById('btn-markiraj');
     if (ostavashti <= 0) {
         btnMark.className = "btn btn-blue";
@@ -530,7 +524,6 @@ function otvoriProfil(id) {
         btnMark.innerText = "МАРКИРАЙ ТРЕНИРОВКА";
         btnMark.onclick = markirajTrenirovka;
     }
-
     renderHronologiya(k.history);
     pokajiSektsiya('view-profile');
 }
@@ -551,6 +544,7 @@ const toBase64 = file => new Promise((resolve, reject) => {
 function markirajTrenirovka() {
     playBeep(); 
     const k = klienti.find(x => x.id === tekushtKlientId);
+    if (!k || k.abonament.napraveni >= k.abonament.broi) return;
     const tip = document.getElementById('sel-trenirovka').value;
     k.abonament.napraveni++;
     k.history.unshift({ data: new Date().toLocaleDateString('bg-BG'), tip: tip });
@@ -562,7 +556,6 @@ function renderHronologiya(history) {
     const list = document.getElementById('hronologiya-list');
     const btn = document.getElementById('btn-toggle-hronologiya');
     const items = hronologiyaRazgurnata ? history : history.slice(0, 3);
-    
     list.innerHTML = items.map(h => `<div class="istoriya-item">📅 ${h.data} г. - ${h.tip}</div>`).join('');
     btn.innerText = hronologiyaRazgurnata ? "СВИЙ СПИСЪКА" : "ВИЖ ВСИЧКИ";
 }
@@ -570,19 +563,16 @@ function renderHronologiya(history) {
 function razshiriHronologiya() {
     hronologiyaRazgurnata = !hronologiyaRazgurnata;
     const k = klienti.find(x => x.id === tekushtKlientId);
-    renderHronologiya(k.history);
+    if(k) renderHronologiya(k.history);
 }
 
 function generirajOtchet() {
     const k = klienti.find(x => x.id === tekushtKlientId);
+    if(!k) return;
     const a = k.abonament;
     const ostavashti = a.broi - a.napraveni;
-    
-    // Вземаме първия запис от историята (последна активност)
     const lastActivity = k.history[0] || { data: "---", tip: "Няма активност" };
-
     const text = `📊 ОТЧЕТ ЗА КЛИЕНТ\n👤 ${k.name}\n\n📦 Пакет: ${a.broi} тренировки\n✅ Активиран: ${a.startData} г.\n⏳ Валиден до: ${a.krainaData} г.\n\n✔️ Направени: ${a.napraveni}\n🔜 Оставащи: ${ostavashti}\n\n📜 ПОСЛЕДНИ АКТИВНОСТИ:\n🗓️ ${lastActivity.data} г. ${lastActivity.tip}`;
-    
     window.location.href = `viber://forward?text=${encodeURIComponent(text)}`;
 }
 
@@ -613,25 +603,26 @@ function zapaziNastroiki() {
     nastroiki.fontSize = document.getElementById('set-font').value;
     nastroiki.accent = document.getElementById('set-accent').value;
     nastroiki.trenirovki = document.getElementById('set-trenirovki').value;
+    nastroiki.gasUrl = document.getElementById('set-gas-url').value;
     try { nastroiki.paketi = JSON.parse(document.getElementById('set-paketi').value); } catch(e) {}
     localStorage.setItem('gym_settings', JSON.stringify(nastroiki));
     init();
 }
 
 async function sinhroniziraj() {
-    const url = document.getElementById('set-gas-url').value;
-    if (!url) return alert("Моля, поставете Google Script URL в настройките!");
-
+    const url = nastroiki.gasUrl;
+    if (!url) { alert("Моля, поставете Google Script URL в настройките!"); return; }
+    
     try {
-        // Експорт към Google Drive
         const response = await fetch(url, {
             method: 'POST',
+            mode: 'no-cors', // Важно за избягване на CORS грешки при Google Scripts
+            cache: 'no-cache',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(klienti)
         });
-        if (response.ok) alert("Успешен бекъп в Google Drive!");
-    } catch (e) {
-        alert("Грешка при синхронизация: " + e.message);
-    }
+        alert("Заявката е изпратена! Проверете Google Таблицата.");
+    } catch (e) { alert("Грешка при синхронизация: " + e.message); }
 }
 
 function eksportDanni() {
@@ -646,9 +637,11 @@ function importDanni() {
         const file = e.target.files[0]; const reader = new FileReader();
         reader.readAsText(file, 'UTF-8');
         reader.onload = re => {
-            klienti = JSON.parse(re.target.result);
-            localStorage.setItem('gym_klienti', JSON.stringify(klienti));
-            renderList(); alert("Данните са импортирани!");
+            try {
+                klienti = JSON.parse(re.target.result);
+                localStorage.setItem('gym_klienti', JSON.stringify(klienti));
+                renderList(); alert("Данните са импортирани!");
+            } catch(ex) { alert("Грешка при четене на файла!"); }
         }
     }
     input.click();
@@ -656,12 +649,11 @@ function importDanni() {
 
 init();
 
-// Регистрация на Service Worker за PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Service Worker регистриран!', reg))
-      .catch(err => console.log('Грешка при регистрация:', err));
+      .then(reg => console.log('PWA Ready'))
+      .catch(err => console.log('SW Error', err));
   });
 }
 </script>
