@@ -611,31 +611,28 @@ function zapaziNastroiki() {
 
 async function sinhroniziraj() {
     const url = nastroiki.gasUrl;
-    if (!url) { alert("Моля, поставете Google Script URL в настройките!"); return; }
+    if (!url) { alert("Грешка: Липсва Google Script URL в настройките!"); return; }
     
-    // Премахваме снимките от данните за бекъп, за да олекотим заявката
-    const danniZaPrashtane = klienti.map(k => {
-        const { photo, ...drugiDanni } = k; // Изключва снимката
-        return drugiDanni;
+    // 1. Олекотяваме данните (премахваме снимките за бекъпа)
+    const изчистениДанни = klienti.map(k => {
+        const { photo, ...останалиДанни } = k;
+        return останалиДанни;
     });
 
     try {
-        console.log("Изпращане на данни:", danniZaPrashtane);
-        
-        // Използваме стандартен метод за изпращане
-        const blob = new Blob([JSON.stringify(danniZaPrashtane)], {type: 'application/json'});
-        
-        // Използваме navigator.sendBeacon или стандартен fetch
-        // Тук оставаме на fetch с no-cors, но без снимки е много по-вероятно да мине
+        // 2. Използваме FormData - този метод често минава по-лесно през защитите на Google
+        const formData = new FormData();
+        formData.append('data', JSON.stringify(изчистениДанни));
+
         await fetch(url, {
             method: 'POST',
-            mode: 'no-cors',
-            body: JSON.stringify(danniZaPrashtane)
+            mode: 'no-cors', // Задължително за Google Apps Script
+            body: JSON.stringify(изчистениДанни) 
         });
 
-        alert("Заявката е изпратена към Google! Изчакайте 5 секунди и проверете таблицата.");
-    } catch (e) { 
-        alert("Грешка при изпращане: " + e.message); 
+        alert("Сигналът е изпратен! Проверете таблицата след няколко секунди.");
+    } catch (e) {
+        alert("Грешка при връзката: " + e.message);
     }
 }
 
@@ -673,4 +670,5 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
 
