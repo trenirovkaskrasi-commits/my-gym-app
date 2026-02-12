@@ -613,16 +613,30 @@ async function sinhroniziraj() {
     const url = nastroiki.gasUrl;
     if (!url) { alert("Моля, поставете Google Script URL в настройките!"); return; }
     
+    // Премахваме снимките от данните за бекъп, за да олекотим заявката
+    const danniZaPrashtane = klienti.map(k => {
+        const { photo, ...drugiDanni } = k; // Изключва снимката
+        return drugiDanni;
+    });
+
     try {
-        const response = await fetch(url, {
+        console.log("Изпращане на данни:", danniZaPrashtane);
+        
+        // Използваме стандартен метод за изпращане
+        const blob = new Blob([JSON.stringify(danniZaPrashtane)], {type: 'application/json'});
+        
+        // Използваме navigator.sendBeacon или стандартен fetch
+        // Тук оставаме на fetch с no-cors, но без снимки е много по-вероятно да мине
+        await fetch(url, {
             method: 'POST',
-            mode: 'no-cors', // Важно за избягване на CORS грешки при Google Scripts
-            cache: 'no-cache',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(klienti)
+            mode: 'no-cors',
+            body: JSON.stringify(danniZaPrashtane)
         });
-        alert("Заявката е изпратена! Проверете Google Таблицата.");
-    } catch (e) { alert("Грешка при синхронизация: " + e.message); }
+
+        alert("Заявката е изпратена към Google! Изчакайте 5 секунди и проверете таблицата.");
+    } catch (e) { 
+        alert("Грешка при изпращане: " + e.message); 
+    }
 }
 
 function eksportDanni() {
@@ -659,3 +673,4 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
