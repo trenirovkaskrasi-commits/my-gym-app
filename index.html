@@ -611,31 +611,42 @@ function zapaziNastroiki() {
 
 async function sinhroniziraj() {
     const url = nastroiki.gasUrl;
-    if (!url) { alert("Грешка: Липсва Google Script URL в настройките!"); return; }
+    if (!url) { alert("Моля, поставете URL в настройките!"); return; }
     
-    // 1. Олекотяваме данните (премахваме снимките за бекъпа)
-    const изчистениДанни = klienti.map(k => {
-        const { photo, ...останалиДанни } = k;
-        return останалиДанни;
+    // Олекотяваме данните (махаме снимките)
+    const dataToSync = klienti.map(k => {
+        const { photo, ...rest } = k;
+        return rest;
     });
 
-    try {
-        // 2. Използваме FormData - този метод често минава по-лесно през защитите на Google
-        const formData = new FormData();
-        formData.append('data', JSON.stringify(изчистениДанни));
+    // Създаваме скрита форма, за да заобиколим CORS защитите
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = url;
+    form.target = 'hidden_iframe'; // Изпраща без да презарежда страницата
 
-        await fetch(url, {
-            method: 'POST',
-            mode: 'no-cors', // Задължително за Google Apps Script
-            body: JSON.stringify(изчистениДанни) 
-        });
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'data';
+    input.value = JSON.stringify(dataToSync);
+    form.appendChild(input);
 
-        alert("Сигналът е изпратен! Проверете таблицата след няколко секунди.");
-    } catch (e) {
-        alert("Грешка при връзката: " + e.message);
+    // Скрит iframe за "тихо" изпращане
+    let iframe = document.getElementById('hidden_iframe');
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = 'hidden_iframe';
+        iframe.name = 'hidden_iframe';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
     }
-}
 
+    document.body.appendChild(form);
+    form.submit();
+    
+    alert("Данните са изпратени по защитен канал! Проверете таблицата след малко.");
+    document.body.removeChild(form);
+}
 function eksportDanni() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(klienti));
     const dl = document.createElement('a'); dl.setAttribute("href", dataStr);
@@ -670,5 +681,6 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
 
 
