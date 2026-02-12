@@ -419,9 +419,11 @@ function otvoriRedaktirane(id) {
 function zapaziKlient() {
     const name = document.getElementById('inp-name').value.trim();
     if (!name) { alert("Моля, въведете име!"); return; }
-    playBeep();
-
+    
+    // Проверка дали сме в режим "Редактиране" (имаме избран клиент)
+    // ИЛИ в режим "Добавяне" (нямаме избран клиент)
     if (rezhimRedaktirane && tekushtKlientId) {
+        // РЕДАКТИРАНЕ НА СЪЩЕСТВУВАЩ
         let k = klienti.find(x => x.id === tekushtKlientId);
         if (k) {
             k.name = name;
@@ -430,37 +432,45 @@ function zapaziKlient() {
             k.photo = snimkaBase64;
         }
     } else {
+        // ДОБАВЯНЕ НА НОВ КЛИЕНТ
         const broi = parseInt(document.getElementById('sel-paket').value);
         const srok = parseInt(document.getElementById('sel-srok').value);
         const otstapka = parseInt(document.getElementById('sel-otstapka').value);
         const kData = izchisliKrainaData(srok);
         const kTsena = document.getElementById('final-price').innerText;
 
-        const novAbonament = {
-            broi: broi, napraveni: 0, srok: srok, otstapka: otstapka,
-            startData: new Date().toLocaleDateString('bg-BG'),
-            krainaData: kData, tsena: kTsena
+        const novKlient = {
+            id: Date.now(), // Уникално ID базирано на времето
+            name: name,
+            photo: snimkaBase64,
+            phone: document.getElementById('inp-phone').value,
+            email: document.getElementById('inp-email').value,
+            abonament: {
+                broi: broi,
+                napraveni: 0,
+                srok: srok,
+                otstapka: otstapka,
+                startData: new Date().toLocaleDateString('bg-BG'),
+                krainaData: kData,
+                tsena: kTsena
+            },
+            history: [{ data: new Date().toLocaleDateString('bg-BG'), tip: "Нов абонамент" }]
         };
-
-        if (tekushtKlientId) {
-            let k = klienti.find(x => x.id === tekushtKlientId);
-            if (k) {
-                k.abonament = novAbonament;
-                k.history.unshift({ data: new Date().toLocaleDateString('bg-BG'), tip: "Подновен абонамент" });
-            }
-        } else {
-            const novKlient = {
-                id: Date.now(),
-                name: name,
-                photo: snimkaBase64,
-                phone: document.getElementById('inp-phone').value,
-                email: document.getElementById('inp-email').value,
-                abonament: novAbonament,
-                history: [{ data: new Date().toLocaleDateString('bg-BG'), tip: "Нов абонамент" }]
-            };
-            klienti.push(novKlient);
-        }
+        klienti.push(novKlient);
     }
+
+    // Запазване в паметта на телефона
+    localStorage.setItem('gym_klienti', JSON.stringify(klienti));
+    
+    // Нулиране на променливите за следващия път
+    rezhimRedaktirane = false;
+    tekushtKlientId = null;
+    snimkaBase64 = "";
+
+    renderList();
+    pokajiSektsiya('view-main');
+    playBeep();
+}
 
     localStorage.setItem('gym_klienti', JSON.stringify(klienti));
     renderList();
@@ -661,6 +671,7 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
 
 
 
